@@ -3,7 +3,7 @@ import Input from '../input'
 import List from '../list'
 
 export default function ManualTab({ callback }: { callback: (names: string[]) => void }) {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<string[]>([])
 
   return (
     <>

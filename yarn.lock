@@ -408,23 +408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.20.0":
-  version: 5.20.0
-  resolution: "@typescript-eslint/parser@npm:5.20.0"
-  dependencies:
-    "@typescript-eslint/scope-manager": 5.20.0
-    "@typescript-eslint/types": 5.20.0
-    "@typescript-eslint/typescript-estree": 5.20.0
-    debug: ^4.3.2
-  peerDependencies:
-    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 0a72c5c0fbea3ef30332a20a7fc673461a4106225d7d4b78e1d4eb3cd0343d26132deb0cdaa17fd31b90711c63978996216faf1fb9a7abdee367e3b42f812e21
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/scope-manager@npm:5.10.1":
   version: 5.10.1
   resolution: "@typescript-eslint/scope-manager@npm:5.10.1"
@@ -1867,7 +1850,6 @@ __metadata:
     "@types/react": ^16.9.44
     "@types/react-dom": ^16.9.8
     "@typescript-eslint/eslint-plugin": ^5.20.0
-    "@typescript-eslint/parser": ^5.20.0
     autoprefixer: ^10.4.5
     cross-env: ^7.0.3
     eslint: 8.14.0

@@ -3,9 +3,9 @@ import { resolveIgnFromUUIDs } from '..'
 import Input from '../input'
 import List from '../list'
 
-export default function FriendTab({ apiKey, callback, refreshApiKey }: { apiKey: string; callback: (names: string[]) => void; refreshApiKey: () => void }) {
-  const [data, setData] = useState(undefined)
-  const [error, setError] = useState(undefined)
+export default function FriendTab({ apiKey, callback, refreshApiKey }: { apiKey?: string; callback: (names: string[]) => void; refreshApiKey: () => void }) {
+  const [data, setData] = useState<string[] | undefined>()
+  const [error, setError] = useState<string | undefined>()
   const [disabled, setDisabled] = useState(false)
 
   return (
@@ -24,12 +24,12 @@ export default function FriendTab({ apiKey, callback, refreshApiKey }: { apiKey:
             setDisabled(false)
           }
 
-          const data = await (await fetch(`https://api.hypixel.net/friends?uuid=${uuid}&key=${apiKey}`)).json()
+          const data = (await (await fetch(`https://api.hypixel.net/friends?uuid=${uuid}&key=${apiKey}`)).json()) as Response
 
           if (data.success && data.uuid && data.records?.length) {
-            const list: string[] = [...data.records.map(({ uuidReceiver }) => uuidReceiver), ...data.records.map(({ uuidSender }) => uuidSender)]
+            const list = [...data.records.map(({ uuidReceiver }) => uuidReceiver), ...data.records.map(({ uuidSender }) => uuidSender)]
               .filter(Boolean)
-              .filter(el => el.replace(/-/g, '') != data.uuid.replace(/-/g, ''))
+              .filter(element => element.replace(/-/g, '') != uuid.replace(/-/g, ''))
             setData(await resolveIgnFromUUIDs(list))
           } else {
             setError(data.cause ?? 'No friends found')
@@ -46,6 +46,20 @@ export default function FriendTab({ apiKey, callback, refreshApiKey }: { apiKey:
   )
 }
 
-async function uuidFromUsername(username: string) {
+async function uuidFromUsername(username: string): Promise<string> {
   return (await (await fetch(`https://api.ashcon.app/mojang/v2/user/${username}`)).json()).uuid
+}
+
+interface Response {
+  success: boolean
+  cause?: string
+  uuid?: string
+  records?: Record[]
+}
+
+type Record = {
+  _id: string
+  uuidSender: string
+  uuidReceiver: string
+  started: number
 }

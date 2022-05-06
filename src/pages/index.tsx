@@ -13,17 +13,17 @@ interface PageProps {
 
 export default function Home({ socket }: PageProps) {
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState<string>(undefined)
+  const [username, setUsername] = useState<string | undefined>()
   const [online, setOnline] = useState(false)
-  const [messageStack, setMessageStack] = useState([])
-  const [queue, setQueue] = useState([])
-  const [authCode, setAuthCode] = useState<string>(undefined)
+  const [messageStack, setMessageStack] = useState<string[]>([])
+  const [queue, setQueue] = useState<string[]>([])
+  const [authCode, setAuthCode] = useState<string | undefined>()
   const [allowed, setAllowed] = useState<string[]>([])
   const [banned, setBanned] = useState<string[]>([])
   const [publicMode, setPublicMode] = useState(true)
   const [allowedAddGui, setAllowedAddGui] = useState(false)
   const [bannedAddGui, setBannedAddGui] = useState(false)
-  const [apiKey, setApiKey] = useState<string>(undefined)
+  const [apiKey, setApiKey] = useState<string | undefined>()
 
   useEffect(() => {
     if (!socket) return
@@ -63,7 +63,7 @@ export default function Home({ socket }: PageProps) {
       </div>
 
       <main>
-        <AuthRequired code={!online && authCode} />
+        <AuthRequired code={online ? undefined : authCode} />
         <div className="flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
           <Box title="⚡ Current Queue">
             <Table data={queue.map(item => [item])} numbering />
@@ -73,7 +73,7 @@ export default function Home({ socket }: PageProps) {
             <Table data={messageStack.map(log => [log])} noTitle blank="No logs yet!" />
           </Box>
 
-          <Box title="✅ Allowed users" button={!publicMode && (() => setAllowedAddGui(true))}>
+          <Box title="✅ Allowed users" button={publicMode ? undefined : () => setAllowedAddGui(true)}>
             {!publicMode && (
               <AddUsers
                 open={allowedAddGui}
@@ -102,7 +102,7 @@ export default function Home({ socket }: PageProps) {
             />
           </Box>
 
-          <Box title="❌ Banned users" button={!publicMode && (() => setBannedAddGui(true))}>
+          <Box title="❌ Banned users" button={publicMode ? undefined : () => setBannedAddGui(true)}>
             {!publicMode && (
               <AddUsers
                 open={bannedAddGui}
@@ -150,6 +150,6 @@ export default function Home({ socket }: PageProps) {
   )
 
   function refreshApiKey() {
-    return socket.emit('refreshApiKey')
+    return socket?.emit('refreshApiKey')
   }
 }

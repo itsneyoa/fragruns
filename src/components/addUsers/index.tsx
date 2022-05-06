@@ -80,7 +80,7 @@ export default function AddUsers({
   )
 }
 
-export async function resolveIgnFromUUIDs(uuids: string[]) {
+export async function resolveIgnFromUUIDs(uuids: string[]): Promise<string[]> {
   return (
     await Promise.all(
       uuids.map(async uuid => {

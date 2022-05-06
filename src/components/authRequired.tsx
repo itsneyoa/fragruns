@@ -14,7 +14,7 @@ export default function AuthRequired({ code }: { code?: string }) {
             </Dialog.Title>
             <div>
               <p className="my-3">
-                Login with Microsoft using code <Code colour="bg-red-600">{code}</Code>
+                Login with Microsoft using code <Code colour="bg-red-600">{code ?? 'Code not found'}</Code>
               </p>
 
               <a href="https://www.microsoft.com/link" target="_blank" rel="noreferrer" className="bg-red-600 p-2 rounded-md">

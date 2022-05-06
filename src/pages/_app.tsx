@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react'
 import ioclient from 'socket.io-client'
 import type { SocketClient } from '../constants'
 
-export default function App({ Component, pageProps }: AppProps) {
-  const [socket, setSocket] = useState<SocketClient | undefined>(undefined)
+export default function Fragruns({ Component, pageProps }: AppProps) {
+  const [socket, setSocket] = useState<SocketClient | undefined>()
 
   useEffect(() => {
     if (typeof window === 'undefined') return

@@ -11,7 +11,7 @@ export default function Input({
   disabled?: boolean
   clearAfterInput?: boolean
 }) {
-  const inputRef = useRef<HTMLInputElement>()
+  const inputRef = useRef<HTMLInputElement>(null)
   const [empty, setEmpty] = useState(true)
 
   return (
@@ -32,8 +32,8 @@ export default function Input({
         className={`py-2 px-4 rounded-md duration-150 ${empty || disabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-600'}`}
         disabled={empty || disabled}
         onClick={() => {
-          callback(inputRef.current.value)
-          if (clearAfterInput) inputRef.current.value = ''
+          callback(inputRef.current?.value ?? '')
+          if (clearAfterInput && inputRef.current) inputRef.current.value = ''
         }}
       >
         Submit

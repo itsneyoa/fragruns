@@ -8,9 +8,9 @@
   },
   "license": "CC BY-NC-SA 4.0",
   "scripts": {
-    "dev:public": "cross-env NODE_ENV=development BOT_MODE=public ts-node src/index.ts",
-    "dev:private": "cross-env NODE_ENV=development BOT_MODE=private ts-node src/index.ts",
-    "build": "next build && tsc",
+    "dev:public": "cross-env NODE_ENV=development BOT_MODE=public ts-node src/index.ts --project src/tsconfig.json",
+    "dev:private": "cross-env NODE_ENV=development BOT_MODE=private ts-node src/index.ts --project src/tsconfig.json",
+    "build": "next build && tsc --project src/tsconfig.json",
     "public": "cross-env NODE_ENV=production BOT_MODE=public node dist/index.js",
     "private": "cross-env NODE_ENV=production BOT_MODE=private node dist/index.js",
     "lint": "next lint"
@@ -32,7 +32,6 @@
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
-    "@typescript-eslint/parser": "^5.20.0",
     "autoprefixer": "^10.4.5",
     "eslint": "8.14.0",
     "eslint-config-next": "12.1.5",
