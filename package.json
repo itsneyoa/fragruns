@@ -1,6 +1,7 @@
 {
   "name": "fragruns",
   "private": true,
+  "version": "1.0.0",
   "author": {
     "name": "Lily Smart",
     "email": "hello@neyoa.me",
