@@ -16,47 +16,47 @@ export default function CreateBot(io: SocketServer): Bot {
   const regex = [
     {
       /* Party invite (normal) */
-      exp: /^-+\s(?:\[.*?\] )?([a-zA-Z0-9_]+) has invited you to join their party! You have 60 seconds to accept\. Click here to join!\s-+$/,
+      exp: /^(?:\[.*?\] )?([a-zA-Z0-9_]+) has invited you to join their party!\sYou have 60 seconds to accept\. Click here to join!$/,
       exec: (match: RegExpMatchArray) => onPartyInvite(match.splice(1).pop())
     },
     {
       /* Party leave */
-      exp: /^-+\sYou left the party\s-+$/,
+      exp: /^You left the party.$/,
       exec: () => onPartyLeave()
     },
     {
       /* Party join confirmation */
-      exp: /^-+\sYou have joined (?:\[.*?\] )?([a-zA-Z0-9_]+)'s party\s-+$/,
+      exp: /^You have joined (?:\[.*?\] )?([a-zA-Z0-9_]+)'s party!(?:\s\sYou'll be partying with: .+)?$/,
       exec: (match: RegExpMatchArray) => onPartyJoin(match.splice(1).pop())
     },
     {
       /* Kicked from party */
-      exp: /^-+\sYou have been kicked from the party by (?:\[.*?\] )?([a-zA-Z0-9_]+)\s-+$/,
+      exp: /^You have been kicked from the party by (?:\[.*?\] )?([a-zA-Z0-9_]+)$/,
       exec: () => onPartyLeave()
     },
     {
       /* Invited to join a different players party */
-      exp: /^-+\s(?:\[.*?\] )?([a-zA-Z0-9_]+) has invited you to join (?:\[.*?\] )?([a-zA-Z0-9_]+)'s party! You have 60 seconds to accept\. Click here to join!\s-+$/,
+      exp: /^(?:\[.*?\] )?([a-zA-Z0-9_]+) has invited you to join (?:\[.*?\] )?([a-zA-Z0-9_]+)'s party!\sYou have 60 seconds to accept\. Click here to join!$/,
       exec: (match: RegExpMatchArray) => onPartyInvite(match.splice(1).pop())
     },
     {
       /* Party disbanded manually */
-      exp: /^-+\s(?:\[.*?\] )?([a-zA-Z0-9_]+) has disbanded the party!\s-+$/,
+      exp: /^(?:\[.*?\] )?([a-zA-Z0-9_]+) has disbanded the party!$/,
       exec: () => onPartyLeave()
     },
     {
       /* Leader disconnected */
-      exp: /^-+\sThe party leader, (?:\[.*?\] )?([a-zA-Z0-9_]+) has disconnected, they have 5 minutes to rejoin before the party is disbanded\.\s-+$/,
+      exp: /^The party leader, (?:\[.*?\] )?([a-zA-Z0-9_]+) has disconnected, they have 5 minutes to rejoin before the party is disbanded\.$/,
       exec: () => null // Does nothing at the moment
     },
     {
       /* Party disbanded by disconnect */
-      exp: /^-+\sThe party was disbanded because the party leader disconnected\.\s-+$/,
+      exp: /^The party was disbanded because the party leader disconnected\.$/,
       exec: () => onPartyLeave()
     },
     {
       /* Party disbanded by all members disconnecting */
-      exp: /^-+\sThe party was disbanded because all invites expired and and the party was empty\s-+$/,
+      exp: /^The party was disbanded because all invites expired and and the party was empty$/,
       exec: () => onPartyLeave()
     },
     {
@@ -71,7 +71,7 @@ export default function CreateBot(io: SocketServer): Bot {
     if (command) {
       bot.chat(command)
     }
-  }, 100) // Can try lower values
+  }, 500) // Woah slow down, you're doing that too fast!
 
   const bot = createBot({
     username: 'Fragruns',
@@ -82,7 +82,8 @@ export default function CreateBot(io: SocketServer): Bot {
     },
     defaultChatPatterns: false,
     host: dev ? 'localhost' : 'mc.hypixel.net',
-    profilesFolder: './.minecraft'
+    profilesFolder: './.minecraft',
+    version: '1.16.5'
   })
 
   bot.on('login', () => {
@@ -94,6 +95,8 @@ export default function CreateBot(io: SocketServer): Bot {
     if (!Storage.apiKey) {
       refreshApiKey()
     }
+
+    commandStack.push('/p leave')
   })
 
   bot.on('end', reason => {
@@ -154,7 +157,11 @@ export default function CreateBot(io: SocketServer): Bot {
   })
 
   bot.on('messagestr', message => {
-    io.emit('logs', logStack.add(message.replace(/\s?-+\s?/g, '')))
+    message = message.replace(/\s?-+\s?/g, '').trim() // remove leading/trailing -----------------------------------------------------
+
+    if (!message) return
+
+    io.emit('logs', logStack.add(message))
 
     for (const { exp, exec } of regex) {
       const match = message.match(exp)
