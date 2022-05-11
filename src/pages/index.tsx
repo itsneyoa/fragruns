@@ -55,8 +55,9 @@ export default function Home({ socket }: PageProps) {
   return (
     <div className="grid place-content-between min-h-screen w-full text-center">
       <div>
-        <h1 className="text-6xl font-bold">Fragruns!</h1>
-
+        <marquee>
+          <h1 className="text-6xl font-bold">Fragruns!</h1>
+        </marquee>
         <p className={`mt-5 text-lg ${!username && 'invisible'} ${online ? 'select-all' : 'select-none cursor-not-allowed'}`}>
           <Code>/p {username}</Code>
         </p>
