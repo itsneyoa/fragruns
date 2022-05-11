@@ -157,11 +157,11 @@ export default function CreateBot(io: SocketServer): Bot {
   })
 
   bot.on('messagestr', message => {
-    message = message.replace(/\s?-+\s?/g, '').trim() // remove leading/trailing -----------------------------------------------------
+    message = message.replace(/\s?-{2,}\s?/g, '').trim() // remove leading/trailing -----------------------------------------------------
 
     if (!message) return
 
-    io.emit('logs', logStack.add(message))
+    if (!message.startsWith('Your new API key is')) io.emit('logs', logStack.add(message))
 
     for (const { exp, exec } of regex) {
       const match = message.match(exp)
