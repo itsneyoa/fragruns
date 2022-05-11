@@ -29,7 +29,14 @@ export default function GuildTab({ apiKey, callback, refreshApiKey }: { apiKey?:
         disabled={disabled}
       />
 
-      <List data={data} error={error} callback={callback} />
+      <List
+        data={data}
+        error={error}
+        callback={names => {
+          setError(undefined)
+          callback(names)
+        }}
+      />
     </>
   )
 }

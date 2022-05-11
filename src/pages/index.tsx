@@ -150,6 +150,6 @@ export default function Home({ socket }: PageProps) {
   )
 
   function refreshApiKey() {
-    return socket?.emit('refreshApiKey')
+    return socket.emit('refreshApiKey')
   }
 }

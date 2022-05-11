@@ -152,7 +152,7 @@ export default function CreateBot(io: SocketServer): Bot {
         io.emit('banned', [...Storage.banned])
       })
 
-      socket.on('refreshApiKey', () => refreshApiKey)
+      socket.on('refreshApiKey', refreshApiKey)
     }
   })
 

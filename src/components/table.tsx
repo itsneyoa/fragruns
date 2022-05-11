@@ -1,4 +1,4 @@
-import { ReactFragment } from 'react'
+import { ReactNode } from 'react'
 
 export default function Table({
   headings,
@@ -8,7 +8,7 @@ export default function Table({
   blank = 'Empty'
 }: {
   headings?: string[]
-  data: Array<Array<string | ReactFragment>>
+  data: Array<Array<string | ReactNode>>
   numbering?: boolean
   noTitle?: boolean
   blank?: string
