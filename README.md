@@ -28,7 +28,7 @@ git clone https://github.com/itsneyoa/fragruns.git
 Download:
 Press the green `code` button in the top right of the files, then press download zip.
 
-#### Navivate into the project directory and install dependencies
+#### Navigate into the project directory and install dependencies
 
 ```
 cd fragruns && yarn
