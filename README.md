@@ -70,7 +70,6 @@ git pull && yarn && yarn build
 - Remove public/private modes and have some way of user authentication to only allow certain people to change the lists
 - Improve the logs displayed on the website
 - Add a bar above the lists as a way of searching through all users or logs
-- Setup the bot so it tries to reconnect if it gets kicked for any reason
 - Add a way to make the bot automatically slime hat the user (will require an account with high enough levels to access all the game islands)
 - Send messages to party chat every time a party is joined
 - Dockerise the application to make deployment easier and setup a 1-click deploy button to a cloud provider

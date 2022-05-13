@@ -4,7 +4,7 @@ import { dev } from '../constants'
 import Stack from '../stack'
 import Storage from '../storage'
 
-export default function CreateBot(io: SocketServer): Bot {
+export default function CreateBot(io: SocketServer) {
   const queue: string[] = []
   const commandStack: string[] = []
   const logStack = new Stack(50)
@@ -12,6 +12,8 @@ export default function CreateBot(io: SocketServer): Bot {
   let online = false
   let isQueueLooping = false
   let currentLeader: string | undefined = undefined
+  let attempts = 1
+  let isFirstJoin = true
 
   const regex = [
     {
@@ -67,43 +69,15 @@ export default function CreateBot(io: SocketServer): Bot {
   ]
 
   setInterval(() => {
-    const command = commandStack.shift()
-    if (command) {
-      bot.chat(command)
+    if (online) {
+      const command = commandStack.shift()
+      if (command) {
+        bot.chat(command)
+      }
     }
   }, 500) // Woah slow down, you're doing that too fast!
 
-  const bot = createBot({
-    username: 'Fragruns',
-    auth: dev ? undefined : 'microsoft',
-    onMsaCode: ({ user_code }) => {
-      code = user_code
-      io.emit('code', code)
-    },
-    defaultChatPatterns: false,
-    host: dev ? 'localhost' : 'mc.hypixel.net',
-    profilesFolder: './.minecraft',
-    version: '1.16.5'
-  })
-
-  bot.on('login', () => {
-    online = true
-    code = undefined
-    io.emit('online', online)
-    io.emit('code', code)
-
-    if (!Storage.apiKey) {
-      refreshApiKey()
-    }
-
-    commandStack.push('/p leave')
-  })
-
-  bot.on('end', reason => {
-    online = false
-    io.emit('online', online)
-    io.emit('logs', logStack.add(`Disconnected: ${reason}`))
-  })
+  let bot = connect()
 
   io.on('connection', socket => {
     socket.emit('online', online)
@@ -156,21 +130,67 @@ export default function CreateBot(io: SocketServer): Bot {
     }
   })
 
-  bot.on('messagestr', message => {
-    message = message.replace(/\s?-{2,}\s?/g, '').trim() // remove leading/trailing -----------------------------------------------------
+  function connect(): Bot {
+    const newBot = createBot({
+      username: 'Fragruns',
+      auth: dev ? undefined : 'microsoft',
+      onMsaCode: ({ user_code }) => {
+        code = user_code
+        io.emit('code', code)
+      },
+      defaultChatPatterns: false,
+      host: dev ? 'localhost' : 'mc.hypixel.net',
+      profilesFolder: './.minecraft',
+      version: '1.16.5'
+    })
 
-    if (!message) return
-
-    if (!message.startsWith('Your new API key is')) io.emit('logs', logStack.add(message))
-
-    for (const { exp, exec } of regex) {
-      const match = message.match(exp)
-
-      if (match) {
-        return exec(match)
+    newBot.on('spawn', () => {
+      if (isFirstJoin) {
+        isFirstJoin = false
+        online = true
+        code = undefined
+        attempts = 1
+        io.emit('online', online)
+        io.emit('code', code)
+        commandStack.push('/p leave')
       }
-    }
-  })
+
+      if (!Storage.apiKey) {
+        refreshApiKey()
+      }
+    })
+
+    newBot.on('end', reason => {
+      online = false
+      isFirstJoin = true
+      const delay = attempts * 5 > 60 ? 60 : attempts++ * 5
+
+      io.emit('online', online)
+      io.emit('logs', logStack.add(`Disconnected: ${reason}, relogging in ${delay} seconds`))
+
+      setTimeout(() => {
+        bot = connect()
+      }, delay * 1000)
+    })
+
+    newBot.on('messagestr', message => {
+      message = message.replace(/\s?-{2,}\s?/g, '').trim() // remove leading/trailing -----------------------------------------------------
+
+      if (!message) return
+
+      if (!message.startsWith('Your new API key is')) io.emit('logs', logStack.add(message))
+
+      for (const { exp, exec } of regex) {
+        const match = message.match(exp)
+
+        if (match) {
+          return exec(match)
+        }
+      }
+    })
+
+    return newBot
+  }
 
   async function onPartyInvite(username?: string) {
     if (!username) return
@@ -230,6 +250,4 @@ export default function CreateBot(io: SocketServer): Bot {
       io.emit('apiKey', Storage.apiKey)
     }
   }
-
-  return bot
 }

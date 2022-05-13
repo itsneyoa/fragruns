@@ -1,7 +1,6 @@
 import CreateNextServer from './server'
 import Storage from './storage'
 
-
 CreateNextServer()
 
 const exitEvents = [

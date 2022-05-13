@@ -22,5 +22,4 @@ export default async function CreateServer() {
   console.log(
     `> Web Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV} for ${publicMode ? 'public' : 'private'} use.`
   )
-  return server
 }
