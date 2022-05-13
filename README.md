@@ -34,6 +34,12 @@ Press the green `code` button in the top right of the files, then press download
 cd fragruns && yarn
 ```
 
+#### Compile the Typescript and Next page
+
+```
+yarn build
+```
+
 #### Run the bot
 
 Public mode:
@@ -51,6 +57,12 @@ yarn private
 #### Use the application
 
 Navigate to http://localhost:3000 in your browser to get started
+
+### Update
+
+```
+git pull && yarn && yarn build
+```
 
 # To do
 
