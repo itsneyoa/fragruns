@@ -64,6 +64,33 @@ Navigate to http://localhost:3000 in your browser to get started
 git pull && yarn && yarn build
 ```
 
+## Installation using Docker
+
+### Setup
+
+#### Clone or download the repository
+
+Clone:
+
+```
+git clone https://github.com/itsneyoa/fragruns.git
+```
+
+Download:
+Press the green `code` button in the top right of the files, then press download zip.
+
+#### Navigate into the project directory
+
+```
+cd fragruns
+```
+
+#### Run the docker file
+
+```
+docker run -d -p 3000:3000 labb1e/fragruns:v0
+```
+
 # To do
 
 - If guild or friends are used, add an option to refresh them every x minutes to stay up to date
